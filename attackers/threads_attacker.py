@@ -11,6 +11,7 @@ import requests
 from string import ascii_uppercase, digits
 import random
 from time import sleep
+from time import time as get_sec
 
 _service = "service_name"
 _author = "ocean"
@@ -18,6 +19,8 @@ _submitter_url = 'http://submitter.local/submit'
 
 _flg_re = r"FLG\w{13}"
 
+# This is needed for the alternative tick method
+# _tick_duration = 15*60
 
 q = queue.Queue()
 
@@ -75,6 +78,11 @@ class Attacker():
     def attack(self):
 
         while(1):
+            # if ictf is not supported you can use this method
+            # get the current time before and after the attack, compute the
+            # time before the next tick and then sleep
+            # init_time = int(get_sec())
+
             threads = []
             team = ic.login("***EMAIL***", "***TOKEN***")
             targets = team.get_targets(_service)
@@ -99,6 +107,11 @@ class Attacker():
             while(team.get_tick_info()['tick_id'] <= t_info['tick_id']):
                 sleep(1)
 
+            # Use this for the alternative tick method
+            # after_time = int(get_sec())
+            # sleep_time = TICK_DURATION - (after_time - init_time)
+            # print("Waiting for the next tick (%d seconds)" % sleep_time)
+            # sleep(sleep_time)
 
 if __name__ == "__main__":
     a = Attacker()
