@@ -4,7 +4,7 @@ from config import config
 from logger import log
 from config import STATUS
 from time import sleep
-
+import requests
 
 class SubmitterBase(object):
 
@@ -116,5 +116,44 @@ class ruCTFeSubmitter(SubmitterBase):
         return status
 
 
+class CYGAMESubmitter(SubmitterBase):
+
+    def __init__(self):
+        super(Submitter, self).__init__()
+
+    def submit(self, flags):
+        """ this function will submit the flags to the scoreboard"""
+        status = []
+
+        try:
+            for flag in flags:
+                params = {
+                    'csrfmiddlewaretoken': '<csrf>',
+                    'flag_input': flag
+                }
+                cookies = {
+                    'sessionid': '<session_id>',
+                    'csrftoken': '<csrf>'
+                }
+                r = requests.post("http://10.100.50.10/competition/submit/",
+                    data=params, cookies=cookies)
+
+                output = r.content.decode('utf-8')
+
+                if "Thank you" in output:
+                    s = STATUS["accepted"]
+                elif "once" in output:
+                    s = STATUS["old"]
+                else:
+                    s = STATUS["rejected"]
+
+                status.append(s)
+
+        except Exception as e:
+            log.exception(e)
+
+        return status
+
+
 # choose the submit function here :)
-Submitter = ruCTFeSubmitter
+Submitter = CYGAMESubmitter
