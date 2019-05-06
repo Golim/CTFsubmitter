@@ -5,7 +5,7 @@ doc for more info.
 """
 
 import threading
-import Queue
+import queue
 from ictf import iCTF
 import requests
 from string import ascii_uppercase, digits
@@ -19,7 +19,7 @@ _submitter_url = 'http://submitter.local/submit'
 _flg_re = r"FLG\w{13}"
 
 
-q = Queue.Queue()
+q = queue.Queue()
 
 ic = iCTF()
 

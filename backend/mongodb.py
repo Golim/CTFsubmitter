@@ -1,11 +1,11 @@
 from pymongo import (
     MongoClient, errors, IndexModel, ASCENDING)
 from bson import ObjectId
-from base import BaseBackend
+from backend.base import BaseBackend
 from config import config, STATUS, rSTATUS
 from datetime import datetime
 from time import mktime
-from itertools import izip_longest
+from itertools import zip_longest
 from collections import Counter
 
 
@@ -104,7 +104,7 @@ class MongoBackend(BaseBackend):
             raise ValueError("Something strange happened! Empty flag set!")
 
         stats = {}
-        for k, v in Counter(status).iteritems():
+        for k, v in Counter(status).items():
             stats[rSTATUS[k]] = v
 
         self.stats.update_one(
@@ -113,7 +113,7 @@ class MongoBackend(BaseBackend):
             upsert=True)
 
         unsubmitted_flags = [
-            f[0] for f in izip_longest(
+            f[0] for f in zip_longest(
                         submission['flags'], status,
                         fillvalue=STATUS["unsubmitted"])
             if f[1] == STATUS["unsubmitted"]]

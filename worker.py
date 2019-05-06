@@ -33,7 +33,7 @@ class WorkerPool(object):
         # the pool will contain our consumer threads
         self.pool = []
 
-        for i in xrange(0, config.get("workers", 4)):
+        for i in range(0, config.get("workers", 4)):
             # create a number of worker threads that will
             # "consume" the flags, submitting them
             t = Worker(

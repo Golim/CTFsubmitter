@@ -27,7 +27,7 @@ class DummySubmitter(SubmitterBase):
         ff = []
         for flag in flags:
             status.append(STATUS["accepted"])
-            ff.append(flag['flag'])
+            ff.append(flag)
         print("FLAAAAAAAGS %s" % ff)
 
         return status

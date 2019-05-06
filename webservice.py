@@ -36,7 +36,7 @@ def submit_flag():
     team = request.forms.get('team')
     service = request.forms.get('service')
     flags = request.forms.getall('flags')
-    ip = request.environ.get('REMOTE_ADDR').decode('utf-8')
+    ip = request.environ.get('REMOTE_ADDR')
     ip = int(ip_address(ip))
 
     if not flags or not team or not service or not name:
