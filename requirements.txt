@@ -1,3 +1,5 @@
 bottle
 ipaddress
 pymongo>=3.0
+ictf
+git+https://github.com/arthaud/python3-pwntools.git
