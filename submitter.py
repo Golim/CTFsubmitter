@@ -153,6 +153,41 @@ class CYGAMESubmitter(SubmitterBase):
 
         return status
 
+class CyberChallengeSubmitter(SubmitterBase):
 
-# choose the submit function here :)
-Submitter = SubmitterBase
+    def __init__(self):
+        super(Submitter, self).__init__()
+
+    def submit(self, flags):
+        """ this function will submit the flags to the scoreboard """
+        status = []
+
+        try:
+            for flag in flags:
+                url = 'https://finals.cyberchallenge.it/submit'
+                data = {
+                    'team_token': '<team_token>',
+                    'flag': flag
+                }
+                r = requests.post(url, data=data)
+
+                output = r.content.decode('utf-8')
+
+                # TODO: test these
+                # TODO: add a check for invalid
+                if "expired" in output:
+                    s = STATUS["old"]
+                elif "Duplicated" in output:
+                    s = STATUS["rejected"]
+                else:
+                    s = STATUS["accepted"]
+
+                status.append(s)
+
+        except Exception as e:
+            log.exception(e)
+
+        return status
+
+# choose the submit function here
+Submitter = CyberChallengeSubmitter
