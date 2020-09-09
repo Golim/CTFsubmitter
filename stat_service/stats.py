@@ -22,7 +22,7 @@ class SocketHandler(websocket.WebSocketHandler):
                     m, default=date_encoder.default))
 
     @gen.coroutine
-    def open(self):
+    async def open(self):
 
         if self not in client_list:
             client_list.append(self)
