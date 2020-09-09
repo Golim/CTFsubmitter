@@ -55,7 +55,7 @@ app = web.Application([
 
 
 @gen.coroutine
-def push_log():
+async def push_log():
     cursor = logs.find(cursor_type = CursorType.TAILABLE_AWAIT)
 
     while True:
@@ -64,8 +64,7 @@ def push_log():
             yield gen.sleep(1)
             cursor = logs.find(cursor_type = CursorType.TAILABLE_AWAIT)
 
-        if (yield cursor.fetch_next):
-            r = cursor.next_object()
+        async for r in cursor:
 
             r[u'msgtype'] = 'log'
             msg = json.dumps(
@@ -84,15 +83,14 @@ def check_stat(r):
 
 
 @gen.coroutine
-def push_stats():
+async def push_stats():
     # unlike the log function we will have to poll
     # the db for updates, aggregating results
     while True:
         yield gen.sleep(20)
         cursor = stats.find()
-        while (yield cursor.fetch_next):
-            r = cursor.next_object()
 
+        async for r in cursor:
             # here check the stats and report any error
             try:
                 check_stat(r)
