@@ -15,6 +15,7 @@
 5. Install requirements
 
     `pip3 install -r requirements.txt`
+    (Note: you will get some errors, we are investigating why)
 
 6. Run `python submitter.py`
 
@@ -29,6 +30,7 @@
 9. Install stats requirements
 
     `pip3 install -r stats_requirements.txt`
+    (Note: you will get some errors, we are investigating why)
 
 10. Run `python stats.py`
 
