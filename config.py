@@ -1,10 +1,10 @@
 config = {
     "debug": True,
     "flags_db": "flagsdb",
-    "flag_regex": "\w{31}=",
+    "flag_regex": "flg{[A-Za-z0-9]{25}}",
     "worker_sleep_time": 5,
     "mongodb": {
-        "host": "mongo-dev",
+        "host": "localhost",
         "port": 27017,
         "log_size": 500*1024
     },
