@@ -1,4 +1,3 @@
-from __future__ import print_function
 from importlib import import_module
 from config import config
 from logger import log
@@ -156,4 +155,4 @@ class CYGAMESubmitter(SubmitterBase):
 
 
 # choose the submit function here :)
-Submitter = CYGAMESubmitter
+Submitter = SubmitterBase

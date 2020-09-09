@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 from bottle import (
     post, get, run, request, abort,
     template, static_file, route, error)
