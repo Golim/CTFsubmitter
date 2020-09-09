@@ -6,26 +6,32 @@
 
 3. Create a virtual environment in the main directory
 
-    `python3 -m venv ctf-submitter`
+    `python3 -m venv main-venv`
 
-4. Install requirements
+4. Activate the virtual environment
+	
+	`source main-venv/bin/activate`
+
+5. Install requirements
 
     `pip3 install -r requirements.txt`
 
-5. Run `python submitter.py`
+6. Run `python submitter.py`
 
-6. Run `python worker.py`
+7. Run `python worker.py`
 
-7. Move to `stat_service` directory and create a second virtual environment
+8. Move to `stat_service` directory, create a second virtual environment and activate it
 
-    `python3 -m venv ctf-submitter`
+    `cd stat_service
+    python3 -m venv stats-venv
+    source stats-venv/bin/activate`
 
-8. Install stats requirements
+9. Install stats requirements
 
     `pip3 install -r stats_requirements.txt`
 
-9. Run `python stats.py`
+10. Run `python stats.py`
 
-10. Return to the main directory and run `python webservice.py`
+11. Return to the main directory and run `python webservice.py`
 
-11. Go to [http://localhost:8080/stats](http://localhost:8080/stats)
+12. Go to [http://localhost:8080/stats](http://localhost:8080/stats)
