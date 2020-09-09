@@ -28,8 +28,7 @@ class SocketHandler(websocket.WebSocketHandler):
             client_list.append(self)
         cursor = logs.find().sort('$natural', DESCENDING).limit(30)
         start_logs = []
-        while(yield cursor.fetch_next):
-            r = cursor.next_object()
+        async for r in cursor:
             r[u'msgtype'] = 'log'
             start_logs.append(json.dumps(
                 r, default=date_encoder.default))
@@ -39,8 +38,8 @@ class SocketHandler(websocket.WebSocketHandler):
             self.write_message(msg)
 
         cursor = stats.find()
-        while (yield cursor.fetch_next):
-            r = cursor.next_object()
+
+        async for r in cursor:
             r[u'msgtype'] = 'stats'
             self.write_message(json.dumps(
                 r, default=date_encoder.default))
@@ -65,7 +64,6 @@ async def push_log():
             cursor = logs.find(cursor_type = CursorType.TAILABLE_AWAIT)
 
         async for r in cursor:
-
             r[u'msgtype'] = 'log'
             msg = json.dumps(
                 r, default=date_encoder.default)
