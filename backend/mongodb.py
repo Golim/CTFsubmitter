@@ -12,18 +12,18 @@ from collections import Counter
 class MongoBackend(BaseBackend):
 
     def cold_restart(self):
-        """ this will set all the pending tasks to submitted """
+        """ Set all the pending tasks to submitted """
         while(self.submissions.find_one_and_update(
                 {'status': STATUS['pending']},
                 {'$set': {'status': STATUS['unsubmitted']}})):
             pass
 
     def insert_logmsg(self, message):
-        """Insert a log message inside mongodb capped collection"""
+        """ Insert a log message inside mongodb capped collection """
         self.logs.insert(message)
 
     def _create_collections(self):
-        # create the capped collection to contain flags
+        """ Create the capped collection to contain flags """
         try:
             self.db.create_collection('statistics')
             self.db.create_collection('flag_list')
@@ -45,7 +45,7 @@ class MongoBackend(BaseBackend):
             self.logs = self.db['logs']
 
     def _create_indexes(self):
-
+        """ TODO: add description of what this does """
         # quick querying for status
         index1 = IndexModel(
             [("status", ASCENDING), ("service", ASCENDING)], name="status")
@@ -69,6 +69,7 @@ class MongoBackend(BaseBackend):
         self.logs.create_index([('insertedAt', ASCENDING)])
 
     def _connect(self):
+        """ Connects to and initialises the database """
         self.client = MongoClient(
             config['mongodb']['host'],
             config['mongodb']['port'])
@@ -78,14 +79,11 @@ class MongoBackend(BaseBackend):
         self._create_collections()
         self._create_indexes()
 
-        # self.global_flagz = self.db["global_flagz"]
-        # contains every single flag to check for
-
     def _close(self):
         self.client.close()
 
     def get_task(self, N=None):
-        # find an unsubmitted block of flags
+        """ Find an unsubmitted block of flags """
         submission = self.submissions.find_one_and_update(
                 {'status': STATUS["unsubmitted"]},
                 {'$set': {'status': STATUS["pending"]}})
@@ -99,7 +97,7 @@ class MongoBackend(BaseBackend):
         return submission
 
     def update_flags(self, submission, status):
-
+        """ TODO: add description of what this does """
         if not submission['flags']:
             raise ValueError("Something strange happened! Empty flag set!")
 
@@ -130,7 +128,7 @@ class MongoBackend(BaseBackend):
                 upsert=True)
 
     def insert_flags(self, team, service, flags, name, ip):
-
+        """ Insert flags in the database """
         x = config.get("mem_rounds", 10)
         date = datetime.utcnow()
         date = int(mktime(date.timetuple()))
@@ -180,7 +178,7 @@ class MongoBackend(BaseBackend):
                 {'service': service,
                     'status': STATUS['unsubmitted']},
                 {'$addToSet': {'flags': {'$each': inserted_ids}},
-                 '$set': {'ip': ip, 'name': name}},
+                    '$set': {'ip': ip, 'name': name}},
                 upsert=True)
 
         # omg that sucks! :D
@@ -208,7 +206,7 @@ class MongoBackend(BaseBackend):
             {'$inc': {
                 'total_submitted': len(flags),
                 'total_inserted': len(inserted_ids)},
-             '$set': {'ip': ip}})
+                '$set': {'ip': ip}})
 
         blk.execute()
 
