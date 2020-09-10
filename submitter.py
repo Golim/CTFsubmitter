@@ -164,7 +164,8 @@ class CyberChallengeSubmitter(SubmitterBase):
 
         try:
             for flag in flags:
-                url = 'https://finals.cyberchallenge.it/submit'
+                # url = 'https://finals.cyberchallenge.it/submit'
+                url = 'http://localhost:54321/'
                 data = {
                     'team_token': '<team_token>',
                     'flag': flag
@@ -174,7 +175,7 @@ class CyberChallengeSubmitter(SubmitterBase):
                 output = r.content.decode('utf-8')
 
                 # TODO: test these
-                # TODO: add a check for invalid
+                # TODO: add a check for invalid vs duplicated
                 if "expired" in output:
                     s = STATUS["old"]
                 elif "Duplicated" in output:

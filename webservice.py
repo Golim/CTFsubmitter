@@ -27,7 +27,7 @@ def stats():
     return template('templates/stats.html')
 
 
-#  web interface here
+# web interface here
 @post('/submit')
 def submit_flag():
     name = request.forms.get('name')
