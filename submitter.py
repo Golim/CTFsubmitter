@@ -165,7 +165,7 @@ class CyberChallengeSubmitter(SubmitterBase):
         try:
             for flag in flags:
                 # url = 'https://finals.cyberchallenge.it/submit'
-                url = 'http://localhost:54321/'
+                url = 'http://localhost:54321/submit'
                 data = {
                     'team_token': '<team_token>',
                     'flag': flag

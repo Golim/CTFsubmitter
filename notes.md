@@ -9,8 +9,8 @@
     `python3 -m venv main-venv`
 
 4. Activate the virtual environment
-	
-	`source main-venv/bin/activate`
+
+    `source main-venv/bin/activate`
 
 5. Install requirements
 
