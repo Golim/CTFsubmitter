@@ -22,13 +22,14 @@ class SocketHandler(websocket.WebSocketHandler):
                     m, default=date_encoder.default))
 
     @gen.coroutine
-    async def open(self):
-
+    def open(self):
         if self not in client_list:
             client_list.append(self)
         cursor = logs.find().sort('$natural', DESCENDING).limit(30)
         start_logs = []
-        async for r in cursor:
+        
+        while (yield cursor.fetch_next):
+            r = cursor.next_object()
             r[u'msgtype'] = 'log'
             start_logs.append(json.dumps(
                 r, default=date_encoder.default))
@@ -39,7 +40,8 @@ class SocketHandler(websocket.WebSocketHandler):
 
         cursor = stats.find()
 
-        async for r in cursor:
+        while (yield cursor.fetch_next):
+            r = cursor.next_object()
             r[u'msgtype'] = 'stats'
             self.write_message(json.dumps(
                 r, default=date_encoder.default))
@@ -54,7 +56,7 @@ app = web.Application([
 
 
 @gen.coroutine
-async def push_log():
+def push_log():
     cursor = logs.find(cursor_type = CursorType.TAILABLE_AWAIT)
 
     while True:
@@ -63,7 +65,8 @@ async def push_log():
             yield gen.sleep(1)
             cursor = logs.find(cursor_type = CursorType.TAILABLE_AWAIT)
 
-        async for r in cursor:
+        while (yield cursor.fetch_next):
+            r = cursor.next_object()
             r[u'msgtype'] = 'log'
             msg = json.dumps(
                 r, default=date_encoder.default)
@@ -81,14 +84,17 @@ def check_stat(r):
 
 
 @gen.coroutine
-async def push_stats():
+def push_stats():
     # unlike the log function we will have to poll
     # the db for updates, aggregating results
     while True:
         yield gen.sleep(20)
         cursor = stats.find()
 
-        async for r in cursor:
+        while (yield cursor.fetch_next):
+            r = cursor.next_object()
+
+            # async for r in cursor:
             # here check the stats and report any error
             try:
                 check_stat(r)
