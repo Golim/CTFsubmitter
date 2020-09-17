@@ -41,8 +41,8 @@ def submit_flag():
         # bad request
         abort(400)
 
-    if not re.match(service_regex, service):
-        abort(400, "wrong format for service \w{32}")
+    # if not re.match(service_regex, service):
+    #     abort(400, "wrong format for service \w{32}")
 
     backend.insert_flags(
             team, service, flags,

@@ -1,3 +1,4 @@
+import random
 import re
 import requests
 from time import sleep
@@ -58,10 +59,16 @@ def exploit(target):
     Implement here the logic of your exploit,
     collect flags in a list and return it
     '''
-    flags = [
-        "flg{expired}",
-        "flg{valid}"
-    ]
+    flags = []
+
+    rand = random.randrange(0, 100)
+    if rand < 60:
+        flags.append('flg{valid}')
+    elif 60 <= rand and rand < 80:
+        flags.append('flg{expired}') 
+    else:
+        flags.append('flg{duplicated}')
+
     return flags
 
 if __name__ == "__main__":
@@ -71,7 +78,6 @@ if __name__ == "__main__":
         print(f'{author} is attacking {service} on port {port}')
         for target in targets:
             flags = exploit(target)
-            print(f'submitting {flags} from target {target["team_name"]}')
-            # res = submit_flags(target, flags)
+            res = submit_flags(target, flags)
 
         sleep(tick)
