@@ -103,8 +103,6 @@ function update_stats(msg) {
             return 'default'
     }
 
-    console.log("functionupdate_stats -> msg", msg) 
-
     if (msg['_id'].indexOf("service") > -1) {
         table = $("#services");
         table.prepend(
@@ -178,8 +176,6 @@ function connectws() {
 
         };
         ws.onmessage = function (evt) {
-            console.log("ws.onmessage -> evt", evt)
-            
             var msg = JSON.parse(evt.data);
             switch (msg.msgtype) {
                 case "log":

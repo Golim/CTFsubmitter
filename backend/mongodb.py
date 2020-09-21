@@ -40,8 +40,8 @@ class MongoBackend(BaseBackend):
             self.flag_list = self.db['flag_list']  # flags
             self.submissions = self.db['submissions']  # task
             self.stats = self.db['statistics']  # stats
-            self.team_stats = self.db['serv_stats']  # stats
-            self.service_stats = self.db['team_stats']  # stats
+            self.team_stats = self.db['team_stats']  # stats
+            self.service_stats = self.db['serv_stats']  # stats
             self.logs = self.db['logs']
 
     def _create_indexes(self):
