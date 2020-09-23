@@ -105,8 +105,19 @@ class MongoBackend(BaseBackend):
         for k, v in Counter(status).items():
             stats[rSTATUS[k]] = v
 
+        print(f'status = {status}\nstats = {stats}')
+
         self.stats.update_one(
             {'_id': ('user_%s' % submission.get("name"))},
+            {'$inc': stats},
+            upsert=True)
+
+        stats = {}
+        for k, v in Counter(status).items():
+            stats[rSTATUS[k]] = v
+
+        self.service_stats.update_one(
+            {'_id': ('service_%s' % submission.get("service"))},
             {'$inc': stats},
             upsert=True)
 

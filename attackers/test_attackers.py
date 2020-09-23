@@ -34,14 +34,15 @@ def generate_targets():
         targets.append(target)
 
 def submit_flags(target, flags):
+    data = {
+        "service": services[random.randrange(0, len(services))],
+        "team": target['team'],
+        "flags": flags,
+        "name": authors[random.randrange(0, len(authors))]
+    }
+    print(data)
     r = requests.post(
-        submit_url,
-        data = {
-            "service": services[random.randrange(0, len(services))],
-            "team": target['team'],
-            "flags": flags,
-            "name": authors[random.randrange(0, len(authors))]
-        }
+        submit_url, data
     )
     return r.text
 

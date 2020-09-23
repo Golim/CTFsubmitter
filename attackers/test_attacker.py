@@ -17,7 +17,7 @@ Implement the logic of the exploit in the exploit() function below
 '''
 
 submit_url  = 'http://localhost:8080/submit'
-author      = "Matteo Golinelli"
+author      = "Luca"
 service     = "Service Name"
 port        = 12345
 
@@ -43,31 +43,42 @@ def generate_targets():
         targets.append(target)
 
 def submit_flags(target, flags):
+    data = {
+        "service": service,
+        "team": target['team'],
+        "flags": flags,
+        "name": author
+    }
+    print(data)
     r = requests.post(
         submit_url,
-        data = {
-            "service": service,
-            "team": target['team'],
-            "flags": flags,
-            "name": author
-        }
+        data
     )
     return r.text
 
+valid, expired, duplicated = 0, 0, 0
+
 def exploit(target):
+    global valid, expired, duplicated
     '''
     Implement here the logic of your exploit,
     collect flags in a list and return it
     '''
     flags = []
 
-    rand = random.randrange(0, 100)
-    if rand < 60:
-        flags.append('flg{valid}')
-    elif 60 <= rand and rand < 80:
-        flags.append('flg{expired}') 
-    else:
-        flags.append('flg{duplicated}')
+    for i in range(5):
+        rand = random.randrange(0, 100)
+        if rand < 60:
+            flags.append('flg{valid}')
+            valid += 1
+        elif 60 <= rand and rand < 80:
+            flags.append('flg{expired}') 
+            expired += 1
+        else:
+            flags.append('flg{duplicated}')
+            duplicated += 1
+    
+    print(valid, expired, duplicated)
 
     return flags
 
@@ -75,7 +86,6 @@ if __name__ == "__main__":
     generate_targets()
 
     while True:
-        print(f'{author} is attacking {service} on port {port}')
         for target in targets:
             flags = exploit(target)
             res = submit_flags(target, flags)
