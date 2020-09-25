@@ -163,6 +163,8 @@ class CyberChallengeSubmitter(SubmitterBase):
         status = []
 
         try:
+            print(f'Number of flags to submit: {len(flags)}')
+            expired, duplicated, accepted = 0, 0, 0
             for flag in flags:
                 # url = 'https://finals.cyberchallenge.it/submit'
                 url = 'http://localhost:54321/submit'
@@ -177,13 +179,17 @@ class CyberChallengeSubmitter(SubmitterBase):
                 # TODO: test these
                 # TODO: add a check for invalid vs duplicated
                 if "expired" in output:
+                    expired += 1
                     s = STATUS["old"]
                 elif "Duplicated" in output:
+                    duplicated += 1
                     s = STATUS["rejected"]
                 else:
+                    accepted += 1
                     s = STATUS["accepted"]
 
                 status.append(s)
+            print(f'Submitted flags statistics: expired: {expired}, duplicated: {duplicated}, accepted: {accepted}')
 
         except Exception as e:
             log.exception(e)

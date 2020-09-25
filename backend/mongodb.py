@@ -105,7 +105,7 @@ class MongoBackend(BaseBackend):
         for k, v in Counter(status).items():
             stats[rSTATUS[k]] = v
 
-        print(f'status = {status}\nstats = {stats}')
+        print(f'For service {submission.get("service")}\nstatus = {status}\nstats = {stats}')
 
         self.stats.update_one(
             {'_id': ('user_%s' % submission.get("name"))},
@@ -116,11 +116,6 @@ class MongoBackend(BaseBackend):
         for k, v in Counter(status).items():
             stats[rSTATUS[k]] = v
 
-        self.service_stats.update_one(
-            {'_id': ('service_%s' % submission.get("service"))},
-            {'$inc': stats},
-            upsert=True)
-
         unsubmitted_flags = [
             f[0] for f in zip_longest(
                         submission['flags'], status,
@@ -130,6 +125,18 @@ class MongoBackend(BaseBackend):
         self.submissions.update_one(
             {'_id': submission['_id']},
             {'$set': {'status': STATUS["submitted"]}})
+
+        service = submission.get("service")
+        blk = self.stats.initialize_unordered_bulk_op()
+
+        # add service stat
+        blk.find({'_id': ('service_%s' % service)}).upsert().update(
+            {'$inc': {
+                'accepted': stats['accepted'],
+                'old':      stats['old'],
+                'rejected': stats['rejected']
+                }})
+        blk.execute()
 
         if unsubmitted_flags:
             self.submissions.update_one(

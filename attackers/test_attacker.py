@@ -1,6 +1,7 @@
 import random
 import re
 import requests
+import sys
 from time import sleep
 
 # TODO: Add random User Agent
@@ -31,6 +32,9 @@ config = {
 
 participants = 28 # the total number of teams
 targets = []
+
+def safe_say(msg):
+    print('\n{0}'.format(msg), file=sys.__stderr__)
 
 def generate_targets():
     ip_blacklist = [20] # place here our IP (and others if you need to skip them)
@@ -85,9 +89,15 @@ def exploit(target):
 if __name__ == "__main__":
     generate_targets()
 
-    while True:
-        for target in targets:
-            flags = exploit(target)
-            res = submit_flags(target, flags)
+    try:
+        print("Running! Hit CTRL+C to exit!")
+        
+        while True:
+            for target in targets:
+                flags = exploit(target)
+                res = submit_flags(target, flags)
 
-        sleep(tick)
+            sleep(tick)
+
+    except (KeyboardInterrupt, SystemExit):
+        safe_say("Closing...")
