@@ -1,21 +1,31 @@
+from randagent import getRandomAgent
+'''
+To use randagent:
+headers = {
+    'User-Agent': getRandomAgent()['User-agent']
+}
+'''
 import random
 import re
 import requests
 import sys
 from time import sleep
 
-# TODO: Add random User Agent
-
 '''
 Change:
 - author: your name
 - service
 - service_port
-- flag_regex
+- team_token
 - config
+- flag_regex
 
 Implement the logic of the exploit in the exploit() function below
 '''
+
+# This is needed in case that CTFsubmitter stops working
+fallback_submit_url = 'https://finals.cyberchallenge.it/submit'
+team_token  = ''
 
 submit_url  = 'http://localhost:8080/submit'
 author      = "Luca"
@@ -53,36 +63,43 @@ def submit_flags(target, flags):
         "flags": flags,
         "name": author
     }
-    print(data)
+
     r = requests.post(
         submit_url,
         data
     )
+
+    if not r.status_code == 200:
+        print(f'Received status code {r.status_code}, contact CTFsubmitter maintainer immediately!\nSubmitting flags to the fallback URL')
+        for stolen_flag in flags:
+            r = requests.post(
+                fallback_submit_url,
+                data = {
+                    'team_token': team_token,
+                    'flag': stolen_flag
+                }
+            )
+            # TODO: provide some message about the submitted flag (accepted, duplicated, expired)
+
     return r.text
 
-valid, expired, duplicated = 0, 0, 0
-
 def exploit(target):
-    global valid, expired, duplicated
     '''
     Implement here the logic of your exploit,
     collect flags in a list and return it
     '''
     flags = []
 
-    for i in range(5):
-        rand = random.randrange(0, 100)
-        if rand < 60:
-            flags.append('flg{valid}')
-            valid += 1
-        elif 60 <= rand and rand < 80:
-            flags.append('flg{expired}') 
-            expired += 1
-        else:
-            flags.append('flg{duplicated}')
-            duplicated += 1
-    
-    print(valid, expired, duplicated)
+    url = target['ip_address'] + '/some-endpoint'
+    cookies = {'LPH_SESSID': 'session'}
+
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': getRandomAgent()['User-agent'],
+    }
+
+    r = requests.post(url, cookies=cookies, headers=headers)
+
 
     return flags
 
